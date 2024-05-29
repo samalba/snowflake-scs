@@ -1,0 +1,12 @@
+{
+  "name": "snowflake-scs",
+  "sdk": "python",
+  "dependencies": [
+    {
+      "name": "snowflake-cli",
+      "source": "github.com/samalba/dagger-modules/snowflake-cli@4bdd5f30e5a13e4615d8a936bdfd43bee15647bf"
+    }
+  ],
+  "source": ".",
+  "engineVersion": "v0.11.5"
+}

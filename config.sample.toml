@@ -1,0 +1,11 @@
+[cli.logs]
+save_logs = false
+
+[connections.default]
+account = "FIXME"
+user = "FIXME"
+password = "FIXME"
+database = "SF_TUTS"
+schema = "PUBLIC"
+warehouse = "COMPUTE_WH"
+role = "ACCOUNTADMIN"
