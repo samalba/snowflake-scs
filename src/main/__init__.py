@@ -22,20 +22,21 @@ from dagger import dag, function, object_type
 @object_type
 class SnowflakeScs:
     @function
-    async def build(self, source: dagger.Directory) -> str:
+    async def build(self) -> str:
         """Builds a container image, publishes to the registry, and returns the image ref"""
+
+        # Build the container image from the App directory
+        source = dag.current_module().source().directory("Tutorial-1")
+
         target = "fumlyhg-zkb80860.registry.snowflakecomputing.com/tutorial_db/data_schema/tutorial_repository/my_echo_service_image:latest"
         ctr = source.docker_build(platform=dagger.Platform("linux/amd64"))
         return await ctr.publish(target)
 
     @function
     async def deploy(self, config: dagger.Secret) -> str:
-        """Deploys the container image to the Container Service"""
+        """Builds the container from the App code and deploy it to the Container Service"""
 
-        # Get the app source from the current directory
-        source = dag.current_module().source().directory("Tutorial-1")
-
-        image_ref = await self.build(source)
+        image_ref = await self.build()
         # Extract the image id from the image ref
         image_id = "/" + "/".join(image_ref.split("/")[1:])
 
@@ -71,7 +72,7 @@ class SnowflakeScs:
 
     @function
     async def url(self, config: dagger.Secret) -> str:
-        """Returns the URL of the deployed service"""
+        """Return the URL of the deployed service's endpoint"""
         sql_query = """
             -- use the test_role and tutorial_db
             USE ROLE test_role;
@@ -97,7 +98,7 @@ class SnowflakeScs:
 
     @function
     async def echo(self, config: dagger.Secret, input: str) -> str:
-        """Echoes the input string"""
+        """Call the deployed Echo function and prints the result"""
         sql_query = f"""
             -- use the test_role and tutorial_db
             USE ROLE test_role;
